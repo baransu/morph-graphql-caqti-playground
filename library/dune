@@ -1,0 +1,25 @@
+(library (name ExamplerLibrary) (public_name exampler.library)
+    (modules (:standard \ ExamplerLibraryPesyModules))
+    (libraries exampler.library.pesy-modules)
+    (flags -open ExamplerLibraryPesyModules) (preprocess (pps lwt_ppx)))
+(library (public_name exampler.library.pesy-modules)
+    (name ExamplerLibraryPesyModules) (modules ExamplerLibraryPesyModules)
+    (libraries caqti-driver-postgresql caqti-lwt console.lib fmt.tty
+        graphql-lwt logs logs.fmt lwt lwt.unix morph morph_server_http mtime
+        mtime.clock.os))
+(rule
+    (with-stdout-to ExamplerLibraryPesyModules.re
+        (run echo
+             "module Console = Console;\
+            \nmodule Lwt = Lwt;\
+            \nmodule Lwt_unix = Lwt_unix;\
+            \nmodule Morph = Morph;\
+            \nmodule Morph_server_http = Morph_server_http;\
+            \nmodule Logs = Logs;\
+            \nmodule Logs_fmt = Logs_fmt;\
+            \nmodule Fmt_tty = Fmt_tty;\
+            \nmodule Mtime = Mtime;\
+            \nmodule Mtime_clock = Mtime_clock;\
+            \nmodule Graphql_lwt = Graphql_lwt;\
+            \nmodule Caqti_lwt = Caqti_lwt;\
+            \nmodule Caqti_driver_postgresql = Caqti_driver_postgresql;")))

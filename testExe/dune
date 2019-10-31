@@ -1,0 +1,11 @@
+(executable (name RunExamplerTests)
+    (modules (:standard \ ExamplerTestExePesyModules))
+    (public_name RunExamplerTests.exe)
+    (libraries exampler.testExe.pesy-modules)
+    (flags -open ExamplerTestExePesyModules))
+(library (public_name exampler.testExe.pesy-modules)
+    (name ExamplerTestExePesyModules) (modules ExamplerTestExePesyModules)
+    (libraries exampler.test))
+(rule
+    (with-stdout-to ExamplerTestExePesyModules.re
+        (run echo "module Test = ExamplerTest;")))

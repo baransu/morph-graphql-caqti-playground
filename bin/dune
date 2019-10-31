@@ -1,0 +1,22 @@
+(executable (name ExamplerApp)
+    (modules (:standard \ ExamplerBinPesyModules))
+    (public_name ExamplerApp.exe) (libraries exampler.bin.pesy-modules)
+    (flags -open ExamplerBinPesyModules) (preprocess (pps lwt_ppx)))
+(library (public_name exampler.bin.pesy-modules)
+    (name ExamplerBinPesyModules) (modules ExamplerBinPesyModules)
+    (libraries exampler.library fmt.tty graphql-lwt logs logs.fmt lwt
+        lwt.unix morph morph_graphql_server morph_server_http uri))
+(rule
+    (with-stdout-to ExamplerBinPesyModules.re
+        (run echo
+             "module Library = ExamplerLibrary;\
+            \nmodule Lwt_unix = Lwt_unix;\
+            \nmodule Morph = Morph;\
+            \nmodule Morph_server_http = Morph_server_http;\
+            \nmodule Morph_graphql_server = Morph_graphql_server;\
+            \nmodule Logs = Logs;\
+            \nmodule Logs_fmt = Logs_fmt;\
+            \nmodule Fmt_tty = Fmt_tty;\
+            \nmodule Lwt = Lwt;\
+            \nmodule Graphql_lwt = Graphql_lwt;\
+            \nmodule Uri = Uri;")))

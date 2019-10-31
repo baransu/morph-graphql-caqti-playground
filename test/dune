@@ -1,0 +1,11 @@
+(library (name ExamplerTest) (public_name exampler.test)
+    (modules (:standard \ ExamplerTestPesyModules))
+    (libraries exampler.test.pesy-modules)
+    (flags -linkall -g -open ExamplerTestPesyModules))
+(library (public_name exampler.test.pesy-modules)
+    (name ExamplerTestPesyModules) (modules ExamplerTestPesyModules)
+    (libraries exampler.library rely.lib))
+(rule
+    (with-stdout-to ExamplerTestPesyModules.re
+        (run echo  "module Library = ExamplerLibrary;\
+                  \nmodule Rely = Rely;")))

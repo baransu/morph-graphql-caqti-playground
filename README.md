@@ -1,4 +1,4 @@
-# cooker
+# morph-graphql-caqti-example
 
 A project which demonstrates a Reason workflow with [Esy][].
 
@@ -38,7 +38,7 @@ Documentation for the libraries in the project can be generated with:
 
     % esy doc
     % open-cli `esy echo '#{self.target_dir}/default/_doc/_html/index.html'`
-    
+
 This assumes you have a command like [open-cli](https://github.com/sindresorhus/open-cli) installed on your system.
 
 Shell into environment:
@@ -53,3 +53,9 @@ no dependencies.
     % esy npm-release
     % cd _release
     % npm publish
+
+## Setting up Postgres
+
+```
+docker-compose -f postgres.yml up -d
+```

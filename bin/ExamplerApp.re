@@ -1,29 +1,4 @@
-// open Library;
-// /* It's required because sqlf uses PGOCaml module internaly */
-// module PGOCaml = DB.PostgreSQL;
-// module Query = {
-//   let all = [%sqlf "SELECT * from users;"];
-// };
-// let () = {
-//   Migration.migrate();
-//   let pool = DB.create_pool(~size=16, ());
-//   User.insert(~id=1l, ~name="John", ~email="john@doe.com")
-//   |> DB.run(~pool)
-//   |> Lwt.map(result =>
-//        result |> List.iter(id => Console.log(Int32.to_int(id)))
-//      )
-//   |> Lwt_main.run;
-//   Query.all
-//   |> DB.run(~pool)
-//   |> Lwt.map(result =>
-//        result
-//        |> List.iter(user => {
-//             let user = User.untupled(user);
-//             Console.log(user);
-//            })
-//      )
-//   |> Lwt_main.run;
-// };
+open Library;
 
 Fmt_tty.setup_std_outputs();
 Logs.set_level(Some(Logs.Info));
@@ -34,7 +9,7 @@ let graphql_handler = Morph_graphql_server.make(Library.Schema.schema);
 let handler = (request: Morph.Request.t) => {
   open Morph;
 
-  /* TODO: move to Morph  as Morph.Uri.split ??? */
+  /* TODO: move to Morph as Morph.Uri.split ??? */
   let path_parts =
     request.target
     |> Uri.of_string
@@ -52,8 +27,14 @@ let http_server = Morph_server_http.make();
 
 let () = {
   /* We drop users and create new on every start */
-  let _ = Library.DB.rollback() |> Lwt_main.run;
-  let _ = Library.DB.migrate() |> Lwt_main.run;
+  let Ok(_) =
+    DB.pool
+    |> DB.drop_table(~table_name=User.Table.table_name)
+    |> Lwt_main.run;
+  let Ok(_) =
+    DB.pool
+    |> DB.create_table(~query=User.Table.create_table())
+    |> Lwt_main.run;
 
   handler
   |> Morph.start(

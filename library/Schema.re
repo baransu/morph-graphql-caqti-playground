@@ -6,7 +6,7 @@ let user =
       [
         field(
           "id",
-          ~typ=non_null(int),
+          ~typ=non_null(string),
           ~args=Arg.[],
           ~resolve=(info, user: User.t) =>
           user.id
@@ -42,14 +42,8 @@ let schema: Schema.schema(Hmap.t) =
               arg("email", non_null(string)),
             ],
           ~resolve=(_info, (), name, email) =>
-          DB.add_user(~name, ~email)
-          |> Lwt.map(
-               fun
-               | Ok((id, name, email)) =>
-                 Some(User.make(~id, ~name, ~email, ()))
-               | _ => None,
-             )
-          |> Lwt_result.ok
+          UserContext.add_user(~name, ~email)
+         
         ),
       ],
       [
@@ -58,27 +52,15 @@ let schema: Schema.schema(Hmap.t) =
           ~typ=non_null(list(non_null(user))),
           ~args=Arg.[],
           ~resolve=(_info, ()) =>
-          DB.get_all()
-          |> Lwt.map(
-               fun
-               | Ok(result) => result
-               | Error(_error) => [],
-             )
-          |> Lwt_result.ok
+          UserContext.get_all()
+          
         ),
         io_field(
           "userById",
           ~typ=user,
           ~args=Arg.[arg("id", non_null(int))],
           ~resolve=(_info, (), id) =>
-          DB.get_by_id(id)
-          |> Lwt.map(
-               fun
-               | Ok(Some((id, name, email))) =>
-                 Some(User.make(~id, ~name, ~email, ()))
-               | _ => None,
-             )
-          |> Lwt_result.ok
+          UserContext.get_by_id(id)
         ),
       ],
     )

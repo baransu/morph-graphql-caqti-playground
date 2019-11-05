@@ -43,7 +43,6 @@ let schema: Schema.schema(Hmap.t) =
             ],
           ~resolve=(_info, (), name, email) =>
           UserContext.add_user(~name, ~email)
-         
         ),
       ],
       [
@@ -53,7 +52,6 @@ let schema: Schema.schema(Hmap.t) =
           ~args=Arg.[],
           ~resolve=(_info, ()) =>
           UserContext.get_all()
-          
         ),
         io_field(
           "userById",
